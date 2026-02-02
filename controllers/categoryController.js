@@ -2,14 +2,13 @@ import Admin from "../models/admin.js";
 import Category from "../models/category.js";
 
 export const createCategories = async (req, res) => {
-    try{
-
-        // find user Id 
-        const userId = req.user.id;
-        // console.log(userId);
-
-        // find category name
+     // find category name
         const { categoryName } = req.body;
+
+    try{
+        // find user Id 
+        const userId = req.user._id;
+        // console.log(userId);
 
         if(!categoryName){
             return res.status(400).json({
@@ -33,7 +32,7 @@ export const createCategories = async (req, res) => {
         //     });
         // }
 
-        // find category
+        // find category mean jo frontend se a rahi hai o already exist hai ya nahi
         const category = await Category.findOne({ categoryName });
 
         if(category){
@@ -42,6 +41,7 @@ export const createCategories = async (req, res) => {
             });
         }
 
+        // if category are not exist then create new cateogry
         const newCategory = await Category.create({
             categoryName,
             admin : admin._id
@@ -60,6 +60,7 @@ export const createCategories = async (req, res) => {
             category : newCategory
         });
     }
+    
     catch(err){
         console.error(err);
         return res.status(500).json({
@@ -68,6 +69,8 @@ export const createCategories = async (req, res) => {
     }
 }
 
+
+// for frontend  yaha required nahi hai ki user login required / admin login required
 export const getCategories = async (req, res) => {
     try{
         const getAllCategories = await Category.find({})
@@ -77,6 +80,7 @@ export const getCategories = async (req, res) => {
             categories : getAllCategories
         });
     }
+
     catch(err){
         console.error(err);
         return res.status(500).json({
