@@ -5,6 +5,68 @@
 import Order from "../models/order.js";
 import User from "../models/user.js";
 
+// get a single order
+
+export const getSingleOrder = async(req, res) => {
+    try {
+        const orderId = req.params.id;
+
+        if(!orderId){
+            return res.status(400).json({
+                status: 'error',
+                message: 'order id is required'
+            })
+        }
+
+        const order = await Order.findById(orderId).populate("user").populate("products");
+
+        if(!order){
+            return res.status(400).json({
+                status: 'error',
+                message: 'order not found'
+            })
+        }
+
+        return res.status(200).json({
+            message: 'order fetched successfully',
+            order: order
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            status: 'error',
+            message: err.message
+        })
+        
+    }
+}
+
+
+// get all order
+export const getAllOrders = async (req, res) => {
+    try {
+        const allOrders = await Order.find().populate("user").populate("products");
+
+        if(!allOrders){
+            return res.status(404).json({
+                status: 'error',
+                message: 'orders not found'
+            })
+        }
+
+        return res.status(200).json({
+            message: 'orders fetched successfully',
+            orders: allOrders
+        })
+    } catch (err) {
+        return res.status(500).json({
+            status: 'error',
+            message: err.message
+        })
+        
+    }
+}
+
 export const createOrder = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -37,71 +99,12 @@ export const createOrder = async (req, res) => {
             message: 'order created successfully',
             order: newOrder
         })
-    } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            message: err.message
-        })
-    }
-}
-
-
-// get all order
-export const getAllOrders = async (req, res) => {
-    try {
-        const allOrders = await Order.find().populate("user").populate("products");
-
-        if(!allOrders){
-            return res.status(404).json({
-                status: 'error',
-                message: 'orders not found'
-            })
-        }
-
-        return res.status(200).json({
-            message: 'orders fetched successfully',
-            orders: allOrders
-        })
-    } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            message: err.message
-        })
-        
-    }
-}
-// get a single order
-
-export const getOrder = async(req, res) => {
-    try {
-        const orderId = req.params.id;
-        if(!orderId){
-            return res.status(400).json({
-                status: 'error',
-                message: 'order id is required'
-            })
-        }
-
-        const order = await Order.findById(orderId).populate("user").populate("products");
-
-        if(!order){
-            return res.status(404).json({
-                status: 'error',
-                message: 'order not found'
-            })
-        }
-
-        return res.status(200).json({
-            message: 'order fetched successfully',
-            order: order
-        })
 
     } catch (err) {
         return res.status(500).json({
             status: 'error',
             message: err.message
         })
-        
     }
 }
 
@@ -160,7 +163,6 @@ export const updateOrder = async(req, res) => {
 }
 
 //cancel an order
-
 export const cancelOrder = async(req, res) =>{
     try {
         const orderId = req.params.id;
@@ -201,6 +203,7 @@ export const cancelOrder = async(req, res) =>{
                 message: 'order cancelled successfully',
                 order: updatedOrder
             });
+            
     } catch (err) {
         return res.status(500).json({
             status: 'error',

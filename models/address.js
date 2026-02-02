@@ -18,12 +18,17 @@ const addressSchema = new mongoose.Schema({
         type : String,
     },
 
-    zip : {
+    pincode : {
         type : String,
     },
 
     country : {
         type : String,
+    },
+
+    phone:{
+        type : String,
+        required : true
     }
 });
 

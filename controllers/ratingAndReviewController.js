@@ -65,7 +65,7 @@ export const createRatingAndReview = async (req, res)=> {
     }
 }
 
-//get all rating and reviews
+//fetch all rating and reviews login are not required
 export const getAllRatingAndReview = async (req, res) => {
    try {
     const getAllRatingAndReview = await RatingAndReview.find().populate("product").populate("user");

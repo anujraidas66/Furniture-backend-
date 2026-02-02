@@ -29,14 +29,13 @@ export const authMiddleware = (req,res,next) =>{
         message: err.message
      });
     }
-   
 }
 
 
 // i have replace sellerauthenticate to adminauthenticate
 export const adminAuthenticate = async(req, res) => {
     try {
-        if(req.user.role !== 'user') return res.status(401).json({
+        if(req.user.role !== 'admin') return res.status(401).json({
             status: 'error',
             message: 'you are not admin'
         });

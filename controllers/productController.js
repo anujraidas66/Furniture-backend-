@@ -4,7 +4,7 @@ import { fileUpload } from "../src/config/uploadCloudinary.js";
 
 export const createProduct = async (req, res) => {
 
-    const{name,prices,category,description,color,size,discount,stock} = req.body ?? {};
+    const{name,prices,category,description,color,size,discount,stock,} = req.body ?? {};
 
     try {
 
