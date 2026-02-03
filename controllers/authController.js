@@ -48,49 +48,62 @@ export const login = async (req, res) => {
 }
 
 export const register = async (req, res) => {
-    const {name, email,role, password} = req.body ?? {}
-    try {
-        if(!name || !email || !password) return res.status(400).json({
-            status: 'error',
-            message: 'all fields are required'
-        });
+    try{
 
-        //check garxha jun mail send gardai xha tiyeo pahila nai register xha ki nai
+        const {name, email, role, password, phone} = req.body;
+
+        if(!name || !email || !password){
+            return res.status(400).json({
+                message : "Please fill all the fields"
+            });
+        }
+
         const existingUser = await User.findOne({email});
 
-        if(!existingUser) return res.status(400).json({
-            status: 'error',
-            message: 'user already exists'
-        });
+        if(existingUser){
+            return res.status(400).json({
+                message : "Email already exists"
+            });
+        }
 
-        const hashPassword = await bcrypt.hash(password, 10);
+        const passwordHash =  await bcrypt.hash(password, 10);
 
         const user = await User.create({
             name,
             email,
             role,
-            password: hashPassword
+            phone,
+            password : passwordHash
         });
 
+        // create token 
+        const payload = {
+            id : user._id,
+            role : user.role,
+            email : user.email
+        };
+
+       const token = jwt.sign(payload, 'secret');
         return res.status(201).json({
-            message: 'user successfully registered',
-            user
+            message : "User created successfully",
+            user,
+            token
         });
-
-
-    } catch (err) {
+    }
+    catch(err){
+        console.log(err);
         return res.status(500).json({
-            status: 'error',
-            message: err.message
-        })
+            message : "Internal server error"
+        });
     }
 }
 
 
 //user get profile function like buyer
 export const getProfile = async(req, res) => {
-    const {id} = req.user;
+   
     try {
+        const {id} = req.user;
         if(!id) return res.status(400).json({
             status: 'error',
             message: 'id is required'
@@ -123,50 +136,88 @@ export const getProfile = async(req, res) => {
     }
 }
 
-export const UpdateProfile = async (req, res) => {
-    const {name, email, role,phone} = req.user;
-    try {
-        const {id} = req.user;
+// export const updateProfile = async (req, res) => {
+//     const {name, email, role,phone} = req.user ?? {};
+//     try {
+//         const {id} = req.user;
 
-        if(!id) return res.status(400).json({
-            status: 'error',
-            message: 'login first'
-        });
+//         if(!id) return res.status(400).json({
+//             status: 'error',
+//             message: 'login first'
+//         });
+
+//         const user = await User.findById(id);
+
+//         if(!user) return res.status(404).json({
+//             status: 'error',
+//             message: 'user not found'
+//         });
+
+//         if(name){
+//             user.name = name;
+//         }
+
+//         if(email){
+//             user.email = email;
+//         }
+
+//         if(role){
+//             user.role = role;
+//         }
+    
+//         if(phone){
+//             user.phone = phone;
+//         }
+
+//         await user.save();
+
+//         return res.status(200).json({
+//             message: "user profile updated successfully",
+//             user
+//         })
+
+//     } catch (err) {
+//         return res.status(500).json({
+//             status: 'error',
+//             message: err.message
+//         })
+//     }
+// }
+
+
+
+export const updateProfile = async (req, res) => {
+    const { name, email, phone } = req.body;
+
+    try {
+        const { id } = req.user;
 
         const user = await User.findById(id);
-
-        if(!user) return res.status(404).json({
-            status: 'error',
-            message: 'user not found'
-        });
-
-        if(name){
-            user.name = name;
+        if (!user) {
+            return res.status(404).json({
+                status: "error",
+                message: "User not found"
+            });
         }
 
-        if(email){
-            user.email = email;
-        }
-
-        if(role){
-            user.role = role;
-        }
-    
-        if(phone){
-            user.phone = phone;
-        }
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (phone) user.phone = phone;
 
         await user.save();
 
-        return res.status(200).json({
-            message: "user profile updated successfully",
+        user.password = undefined;
+
+        res.status(200).json({
+            message: "Profile updated successfully",
             user
-        })
+        });
 
     } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            message: err.message
-        })
+        res.status(500).json({ message: err.message });
     }
-}
+};
+
+
+
+
