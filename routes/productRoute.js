@@ -1,6 +1,7 @@
 
 import express from 'express';
-import { createProduct, deleteProduct, getProduct, getProducts, updateProduct } from '../controllers/productController.js';
+import { createProduct, deleteProduct, getProduct,
+     getProducts, getProductsByCategory, updateProduct } from '../controllers/productController.js';
 import { notAllowed } from '../utils/notAllowed.js';
 import { checkFile, updateCheckFile } from '../middleware/checkFiles.js';
 import { checkId } from '../middleware/checkId.js';
@@ -16,4 +17,8 @@ router.route('/api/products/:id')
 .patch(checkId,updateCheckFile,updateProduct)
 .delete(checkId,deleteProduct).all(notAllowed);
 
+
+//category wise data filter;
+router.route('/api/products/category/:category')
+  .get(getProductsByCategory);
 export default router;

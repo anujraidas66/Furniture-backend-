@@ -38,6 +38,33 @@ export const getProduct = async (req, res) => {
    }
 }
 
+// Get products by category
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    const products = await Product.find({ category });
+
+    if (!products.length) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'No products found for this category'
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      results: products.length,
+      products
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
 export const createProduct = async (req, res) => {
     const {title,description,price,category,color,size,rating,stock} = req.body ?? {};
  
