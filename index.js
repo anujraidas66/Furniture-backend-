@@ -4,7 +4,7 @@ import cors from 'cors';
 import productRoute from './routes/productRoute.js'
 import userRoute from './routes/userRoute.js'
 import orderRoute from './routes/orderRoute.js'
-// import contactRoute from './routes/contactRoute.js'
+import contactRoute from './routes/contactRoute.js'
 import fileUpload from 'express-fileupload';
 const app = express();
 const port = 5000;
@@ -35,4 +35,4 @@ app.use(fileUpload({
 app.use(productRoute); 
 app.use(userRoute);
 app.use(orderRoute);
-// app.use('/api/contacts', contactRoute);
+app.use(contactRoute);

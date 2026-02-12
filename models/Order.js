@@ -163,6 +163,7 @@ const orderSchema = new mongoose.Schema({
         quantity: { type: Number, required: true }
       }
     ],
+    
     required: true,
     validate: {
       validator: function (v) {

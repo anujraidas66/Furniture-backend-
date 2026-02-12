@@ -1,26 +1,28 @@
-import express from 'express';
-import { checkId } from '../middleware/checkId.js';
-import { checkUser } from '../middleware/checkUser.js';
-import { createContact, getContactById, getMyContacts } from '../controllers/contactController.js';
-import { notAllowed } from '../utils/notAllowed.js';
+import express from "express";
 
+import { createContact, 
+deleteContact, getContact, getContacts, 
+replyContact } from "../controllers/contactController.js";
+import { notAllowed } from "../utils/notAllowed.js";
+import { checkId } from "../middleware/checkId.js";
+import { checkUser } from "../middleware/checkUser.js";
 
 const router = express.Router();
 
-// User routes
-router.route('/')
-  .post(checkUser, createContact)
-  .get(checkUser, getMyContacts)
-  .all(notAllowed);
+router.route('/api/contacts')
+.get(checkUser, getContacts)
+.post(checkUser, createContact)
+.all(notAllowed);
 
 
-router.route('/api/contact/:id')
-.get(checkId,checkUser,getContactById).all(notAllowed);
+router.route('/api/contacts/:id')
+.get(checkUser, checkId, getContact)
+.patch(checkUser, checkId, replyContact)
+.delete(checkUser, checkId, deleteContact)
+.all(notAllowed);
 
-
-// // Admin routes
-// router.get('/', checkUser, getAllContacts);          // Admin: get all contacts
-// router.put('/:id/status', checkUser, updateContactStatus); // Admin: update status
-// router.delete('/:id', checkUser, deleteContact);    // Admin: delete contact
+// router.get("/contacts/:id", checkUser, checkId, getContact);
+// router.patch("/contacts/:id/reply", checkUser, checkId, replyContact);
+// router.delete("/contacts/:id", checkUser, checkId, deleteContact);
 
 export default router;
