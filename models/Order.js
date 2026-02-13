@@ -183,7 +183,7 @@ const orderSchema = new mongoose.Schema({
   // Payment method - top level
   paymentMethod: {
     type: String,
-    enum: ["Direct Bank", "Cash on Delivery"],
+    enum: ["Direct Bank Transfer", "Cash on Delivery"],
     required: true
   }
 }, { timestamps: true });
