@@ -1,28 +1,24 @@
 import express from "express";
-
-import { createContact, 
-deleteContact, getContact, getContacts, 
-replyContact } from "../controllers/contactController.js";
-import { notAllowed } from "../utils/notAllowed.js";
+import { createContact, getContacts, getContact, replyContact, deleteContact } from "../controllers/contactController.js";
 import { checkId } from "../middleware/checkId.js";
-import { checkUser } from "../middleware/checkUser.js";
+import { checkUser, checkAdmin } from "../middleware/checkUser.js";
+import { notAllowed } from "../utils/notAllowed.js";
 
 const router = express.Router();
 
+// ✅ All contacts
 router.route('/api/contacts')
-.get(checkUser, getContacts)
-.post(checkUser, createContact)
-.all(notAllowed);
+  .get(checkUser, checkAdmin, getContacts)
+  .post(checkUser, createContact)
+  .all(notAllowed);
 
-
+// ✅ Single contact
 router.route('/api/contacts/:id')
-.get(checkUser, checkId, getContact)
-.patch(checkUser, checkId, replyContact)
-.delete(checkUser, checkId, deleteContact)
-.all(notAllowed);
+  .get(checkUser, checkId, getContact)
+  .delete(checkUser, checkId, checkAdmin, deleteContact)
+  .all(notAllowed);
 
-// router.get("/contacts/:id", checkUser, checkId, getContact);
-// router.patch("/contacts/:id/reply", checkUser, checkId, replyContact);
-// router.delete("/contacts/:id", checkUser, checkId, deleteContact);
+// ✅ Reply contact
+router.patch('/api/contacts/:id/reply', checkUser, checkAdmin, checkId, replyContact);
 
 export default router;

@@ -7,28 +7,22 @@ const contactSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
-
     subject: {
       type: String,
       required: true
     },
-
     message: {
       type: String,
       required: true
     },
-
-    // ✅ Admin reply fields
     reply: {
       type: String,
       default: null
     },
-
     repliedAt: {
       type: Date,
       default: null
     },
-
     repliedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -39,5 +33,3 @@ const contactSchema = new mongoose.Schema(
 );
 
 export const Contact = mongoose.model("Contact", contactSchema);
-
-

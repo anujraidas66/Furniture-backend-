@@ -22,3 +22,4 @@ router.route('/api/products/:id')
 router.route('/api/products/category/:category')
   .get(getProductsByCategory);
 export default router;
+
