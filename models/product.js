@@ -30,6 +30,11 @@ const productSchema = new mongoose.Schema({
     required: true
   },
 
+  rating: {
+    type: Number,
+    default: 0
+  },
+
   colors: [{ type: String, required: true }], // multiple colors
     sizes: [{ type: String, required: true }],  // multiple sizes
 

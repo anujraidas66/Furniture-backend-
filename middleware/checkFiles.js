@@ -1,29 +1,46 @@
-import path from 'path';
+import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 const supportedExts = ['.png', '.jpg', '.jpeg', '.gif'];
 
-export const checkFile = (req, res, next) => {
-    const files = req.files?.images; // expect 'images' key for multiple
-    if (!files) return res.status(400).json({ status: 'error', data: 'Please provide image(s)' });
+export const checkFile = async (req, res, next) => {
+    try {
+        const files = req.files?.images;
 
-    const imagesArray = Array.isArray(files) ? files : [files];
-    const imagePaths = [];
+        if (!files)
+            return res.status(400).json({
+                status: 'error',
+                data: 'Please provide image(s)'
+            });
 
-    for (let file of imagesArray) {
-        const ext = path.extname(file.name);
-        if (!supportedExts.includes(ext)) return res.status(400).json({ status: 'error', data: 'Invalid file type' });
+        const imagesArray = Array.isArray(files) ? files : [files];
+        const imagePaths = [];
 
-        const imagePath = `${uuidv4()}-${file.name}`;
-        file.mv(`./uploads/${imagePath}`, (err) => {
-            if (err) return res.status(500).json({ status: 'error', message: err.message });
+        for (let file of imagesArray) {
+            const ext = extname(file.name).toLowerCase();
+
+            if (!supportedExts.includes(ext))
+                return res.status(400).json({
+                    status: 'error',
+                    data: 'Invalid file type'
+                });
+
+            const imagePath = `${uuidv4()}-${file.name}`;
+            await file.mv(`./uploads/${imagePath}`);
+            imagePaths.push(imagePath);
+        }
+
+        req.imagePaths = imagePaths;
+        next();
+
+    } catch (err) {
+        return res.status(500).json({
+            status: 'error',
+            message: err.message
         });
-        imagePaths.push(imagePath);
     }
-
-    req.imagePaths = imagePaths;
-    next();
 };
+
 
 // For update: optional images
 export const updateCheckFile = (req, res, next) => {

@@ -11,30 +11,17 @@ import { notAllowed } from "../utils/notAllowed.js";
 
 const router = express.Router();
 
-/**
- * @route   GET /api/orders
- * @desc    Get all orders
- * @access  User or Admin
- */
+
 router.route("/api/orders")
   .get(checkUser, getOrders)       // fetch all orders (admin sees all)
   .post(checkUser, createOrder)    // create order (user)
   .all(notAllowed);
 
-/**
- * @route   GET /api/orders/:id
- * @desc    Get single order by ID
- * @access  User or Admin
- */
 router.route("/api/orders/:id")
   .get(checkUser, getOrder)
   .all(notAllowed);
 
-/**
- * @route   PATCH /api/orders/:orderId/status
- * @desc    Update order delivery status
- * @access  Admin only
- */
+
 router.route("/api/orders/:orderId/status")
   .patch(checkUser, updateOrderStatus)
   .all(notAllowed);
