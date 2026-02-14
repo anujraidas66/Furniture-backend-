@@ -30,10 +30,20 @@ const productSchema = new mongoose.Schema({
     required: true
   },
 
-  rating: {
-    type: Number,
-    default: 0
+    sku: {
+    type: String,
+    required: true,
+    unique: true,
+    uppercase: true,
+    trim: true
   },
+
+  tags: [{
+    type: String,
+    lowercase: true,
+    trim: true
+  }],
+
 
   colors: [{ type: String, required: true }], // multiple colors
     sizes: [{ type: String, required: true }],  // multiple sizes

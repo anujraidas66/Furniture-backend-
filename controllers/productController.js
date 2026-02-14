@@ -25,22 +25,11 @@ export const getProduct = async (req, res) => {
 };
 
 // GET products by category
-export const getProductsByCategory = async (req, res) => {
-  try {
-    const { category } = req.params;
-    const products = await Product.find({ category });
-    if (!products.length)
-      return res.status(404).json({ status: "error", message: "No products found in this category" });
 
-    return res.status(200).json({ status: "success", results: products.length, products });
-  } catch (err) {
-    return res.status(500).json({ status: "error", message: err.message });
-  }
-};
 
 /// Create Product
 export const createProduct = async (req, res) => {
-    const { title, description, price, category, colors, sizes, stock,rating } = req.body;
+    const { title, description, price, category, colors, sizes, stock, sku,tags } = req.body;
 
     try {
         const product = await Product.create({
@@ -49,7 +38,8 @@ export const createProduct = async (req, res) => {
             price,
             category,
             stock,
-            rating,
+            sku,
+            tags: tags ? JSON.parse(tags) : [], // tags array
             colors: JSON.parse(colors), // colors array
             sizes: JSON.parse(sizes),   // sizes array
             image: req.imagePaths,      // multiple images
@@ -67,7 +57,7 @@ export const createProduct = async (req, res) => {
 
 // Update Product
 export const updateProduct = async (req, res) => {
-    const { title, description, price, category, colors, sizes, stock,rating } = req.body;
+    const { title, description, price, category, colors, sizes, stock,sku,tags } = req.body;
 
     try {
         const product = await Product.findById(req.id);
@@ -83,7 +73,9 @@ export const updateProduct = async (req, res) => {
         product.stock = stock || product.stock;
         product.colors = colors ? JSON.parse(colors) : product.colors;
         product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
-        product.rating = rating || product.rating;
+        product.sku = sku || product.sku;
+        product.tags = tags ? JSON.parse(tags) : product.tags;
+
 
         // Replace images if new ones uploaded
         if (req.imagePaths?.length) {
@@ -122,4 +114,23 @@ export const deleteProduct = async (req, res) => {
 };
 
 
+export const getRelatedProducts = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Get the current product
+    const currentProduct = await Product.findById(id);
+    if (!currentProduct) return res.status(404).json({ message: "Product not found" });
+
+    // Get related products (same category, exclude current product)
+    const relatedProducts = await Product.find({
+      category: currentProduct.category,
+      _id: { $ne: id }
+    }).limit(4); // limit to 4 items
+
+    res.status(200).json({ status: "success", products: relatedProducts });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
+};
 

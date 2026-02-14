@@ -4,7 +4,7 @@ import {
   deleteProduct,
   getProduct,
   getProducts,
-  getProductsByCategory,
+  getRelatedProducts,
   updateProduct
 } from '../controllers/productController.js';
 import { notAllowed } from '../utils/notAllowed.js';
@@ -29,11 +29,8 @@ router
   .delete(checkId, checkUser, checkAdmin, deleteProduct)
   .all(notAllowed);
 
-// --- Products by Category ---
-router
-  .route('/api/products/category/:category')
-  .get(getProductsByCategory)
-  .all(notAllowed);
+router.route("/api/products/:id/related")
+  .get(getRelatedProducts);
 
 export default router;
 
