@@ -1,15 +1,67 @@
 import Product from "../models/product.js";
 import fs from "fs";
+// import Product from "../models/product.js";
 
 // GET all products
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
-    return res.status(200).json({ status: "success", products  });
+    const {
+      page = 1,
+      limit = 8,
+      search,
+      category,
+      minPrice,
+      maxPrice,
+      sort = "newest",
+    } = req.query;
+
+    const query = {};
+
+    // 🔎 Search
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+
+    // 📂 Category
+    if (category) {
+      query.category = category;
+    }
+
+    // 💰 Price Range
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // 🔽 Sorting
+    let sortOption = {};
+    if (sort === "price-asc") sortOption.price = 1;
+    else if (sort === "price-desc") sortOption.price = -1;
+    else sortOption.createdAt = -1;
+
+    const skip = (page - 1) * limit;
+
+    const products = await Product.find(query)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Product.countDocuments(query);
+
+    res.status(200).json({
+      products,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (err) {
-    return res.status(500).json({ status: "error", message: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
+
+
+
 
 // GET single product by ID
 export const getProduct = async (req, res) => {
