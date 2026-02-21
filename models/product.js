@@ -18,7 +18,9 @@ const productSchema = new mongoose.Schema({
     required: true
   },
 
-  image: [{ type: String, required: true }], // multiple images
+
+  image: [{ type: String,
+  required: true }], // multiple images
 
   stock: {
     type: Number,
@@ -41,12 +43,25 @@ const productSchema = new mongoose.Schema({
   tags: [{
     type: String,
     lowercase: true,
-    trim: true
+    trim: true,
+    required: true
   }],
 
 
+  ratingsAverage: {
+  type: Number,
+  default: 0,
+  min: 0,
+  max: 5
+},
+ratingsQuantity: {
+  type: Number,
+  default: 0
+},
+
   colors: [{ type: String, required: true }], // multiple colors
-    sizes: [{ type: String, required: true }],  // multiple sizes
+    sizes: [{ type: String, required: true }]  // multiple sizes
+
 
 }, { timestamps: true });
 

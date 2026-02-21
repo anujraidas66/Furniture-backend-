@@ -6,11 +6,10 @@ const supportedExts = ['.png', '.jpg', '.jpeg', '.gif'];
 export const checkFile = async (req, res, next) => {
     try {
         const files = req.files?.images;
-
         if (!files)
             return res.status(400).json({
                 status: 'error',
-                data: 'Please provide image(s)'
+                data: 'Please provide image'
             });
 
         const imagesArray = Array.isArray(files) ? files : [files];

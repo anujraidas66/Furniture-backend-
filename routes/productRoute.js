@@ -32,6 +32,7 @@ router
 router.route("/api/products/:id/related")
   .get(getRelatedProducts);
 
+
 export default router;
 
 

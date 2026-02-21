@@ -30,7 +30,11 @@ const userSchema = new mongoose.Schema({
       message: '{VALUE} is not supported'
     },
     default: 'user'
-  }
+  },
+
+   resetToken: String,
+   
+  resetTokenExpire: Date,
 
 
 }, { timestamps: true });

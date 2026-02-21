@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -6,6 +8,7 @@ import userRoute from './routes/userRoute.js'
 import orderRoute from './routes/orderRoute.js'
 import contactRoute from './routes/contactRoute.js'
 import fileUpload from 'express-fileupload';
+import subscribeRoutes from './routes/subscribeRoute.js'
 const app = express();
 const port = 5000;
 
@@ -36,3 +39,5 @@ app.use(productRoute);
 app.use(userRoute);
 app.use(orderRoute);
 app.use(contactRoute);
+app.use("/api/subscribe", subscribeRoutes);
+
