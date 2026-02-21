@@ -9,6 +9,8 @@ import orderRoute from './routes/orderRoute.js'
 import contactRoute from './routes/contactRoute.js'
 import fileUpload from 'express-fileupload';
 import subscribeRoutes from './routes/subscribeRoute.js'
+import reviewRoutes from "./routes/reviewRoute.js";
+
 const app = express();
 const port = 5000;
 
@@ -40,4 +42,4 @@ app.use(userRoute);
 app.use(orderRoute);
 app.use(contactRoute);
 app.use("/api/subscribe", subscribeRoutes);
-
+app.use("/api/products/reviews", reviewRoutes);

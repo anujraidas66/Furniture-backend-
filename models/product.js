@@ -13,6 +13,11 @@ const productSchema = new mongoose.Schema({
     required: true
   },
 
+  rating:{
+    type: Number,
+    default: 0
+  },
+
   price: {
     type: Number,
     required: true
@@ -48,16 +53,6 @@ const productSchema = new mongoose.Schema({
   }],
 
 
-  ratingsAverage: {
-  type: Number,
-  default: 0,
-  min: 0,
-  max: 5
-},
-ratingsQuantity: {
-  type: Number,
-  default: 0
-},
 
   colors: [{ type: String, required: true }], // multiple colors
     sizes: [{ type: String, required: true }]  // multiple sizes
